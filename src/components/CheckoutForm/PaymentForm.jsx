@@ -12,11 +12,11 @@ import Review from "./Review";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const PaymentForm = ({
-  shippingData,
   checkoutToken,
-  backStep,
-  onCaptureCheckout,
   nextStep,
+  backStep,
+  shippingData,
+  onCaptureCheckout,
 }) => {
   const handleSubmit = async (event, elements, stripe) => {
     event.preventDefault();
@@ -31,7 +31,7 @@ const PaymentForm = ({
     });
 
     if (error) {
-      console.log(error);
+      console.log("[error]", error);
     } else {
       const orderData = {
         line_items: checkoutToken.live.line_items,
@@ -41,7 +41,7 @@ const PaymentForm = ({
           email: shippingData.email,
         },
         shipping: {
-          name: "Primary",
+          name: "International",
           street: shippingData.address1,
           town_city: shippingData.city,
           county_state: shippingData.shippingSubdivision,
@@ -56,6 +56,7 @@ const PaymentForm = ({
           },
         },
       };
+
       onCaptureCheckout(checkoutToken.id, orderData);
 
       nextStep();
@@ -74,8 +75,7 @@ const PaymentForm = ({
           {({ elements, stripe }) => (
             <form onSubmit={(e) => handleSubmit(e, elements, stripe)}>
               <CardElement />
-              <br />
-              <br />
+              <br /> <br />
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Button variant="outlined" onClick={backStep}>
                   Back
